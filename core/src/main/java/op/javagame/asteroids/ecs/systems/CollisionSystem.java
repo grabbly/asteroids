@@ -117,7 +117,7 @@ public class CollisionSystem extends EntitySystem {
 
                 if (distanceToLaser < combinedRadiusLaser) {
                     Gdx.app.log("COLLISION", "Laser hit asteroid");
-
+                    EventBus.INSTANCE.notify(new GameEvents.CameraShakeEvent(0.1f, 1.3f));
                     toRemove.add(laser);
                     toRemove.add(asteroid);
 

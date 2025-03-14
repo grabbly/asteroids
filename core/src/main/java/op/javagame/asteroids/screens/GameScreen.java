@@ -58,6 +58,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(worldWidth, worldHeight, camera);
         camera.position.set(worldWidth / 2f, worldHeight / 2f, 0);
+        normalCameraPosition = new Vector2(worldWidth / 2f, worldHeight / 2f);
         camera.update();
     }
 
@@ -86,7 +87,6 @@ public class GameScreen implements Screen {
     }
 
     public void shakeCamera(float duration, float intensity) {
-        normalCameraPosition = new Vector2(camera.position.x, camera.position.y);
         shakeDuration = duration;
         shakeIntensity = intensity;
     }

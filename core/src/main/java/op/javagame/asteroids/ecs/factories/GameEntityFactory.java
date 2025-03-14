@@ -40,7 +40,13 @@ public class GameEntityFactory {
             texturePath = smallAsteroids[MathUtils.random(smallAsteroids.length - 1)];
         } else {
             // Use the original large asteroid
-            texturePath = "textures/meteors/meteorBrown_big1.png";
+            String[] bigAsteroids = {
+                "textures/meteors/meteorBrown_big1.png",
+                "textures/meteors/meteorBrown_big2.png",
+                "textures/meteors/meteorGrey_big2.png",
+                "textures/meteors/meteorGrey_big3.png"
+            };
+            texturePath = bigAsteroids[MathUtils.random(bigAsteroids.length - 1)];
         }
 
         entity.add(new TextureComponent(texturePath));
