@@ -4,8 +4,10 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import op.javagame.asteroids.ecs.components.InvincibilityComponent;
 import op.javagame.asteroids.ecs.components.PositionComponent;
 import op.javagame.asteroids.ecs.components.RotationComponent;
+import op.javagame.asteroids.ecs.components.TextureComponent;
 import op.javagame.asteroids.ecs.factories.GameEntityFactory;
 
 public class PlayerSystem extends EntitySystem {
@@ -14,12 +16,15 @@ public class PlayerSystem extends EntitySystem {
     private static final float FRICTION = 0.99f;
     private static final float MAX_SPEED = 600f;
     private static final float MAX_STRAFE_SPEED = 400f;
-    private static final float FIRE_COOLDOWN = 0.3f;
+    private static final float FIRE_COOLDOWN = 0.15f;
 
     private Entity player;
     private Vector2 velocity = new Vector2();
     private Vector2 strafeVelocity = new Vector2();
     private float fireCooldownTimer = 0;
+
+    private static final float BLINK_INTERVAL = 0.2f; // Interval for blinking effect
+    private float blinkTimer = 0; // Timer for controlling blink intervals
 
     public PlayerSystem(Vector2 startPos) {
         this.player = GameEntityFactory.createPlayer(startPos);
@@ -72,6 +77,31 @@ public class PlayerSystem extends EntitySystem {
 
         position.position.add(velocity.cpy().scl(deltaTime));
         position.position.add(strafeVelocity.cpy().scl(deltaTime));
+
+        // Handle invincibility blinking effect
+        InvincibilityComponent invincibility = player.getComponent(InvincibilityComponent.class);
+        TextureComponent texture = player.getComponent(TextureComponent.class);
+
+        if (invincibility != null) {
+            invincibility.invincibilityTime -= deltaTime;
+            blinkTimer -= deltaTime;
+
+            if (blinkTimer <= 0) {
+                invincibility.isBlinking = !invincibility.isBlinking; // Toggle visibility
+                blinkTimer = BLINK_INTERVAL;
+            }
+
+            // If invincibility time is over, remove component
+            if (invincibility.invincibilityTime <= 0) {
+                player.remove(InvincibilityComponent.class);
+                invincibility.isBlinking = false;
+            }
+        }
+
+        // Update visibility of player based on blinking state
+        if (texture != null) {
+            texture.visible = (invincibility == null || !invincibility.isBlinking);
+        }
     }
 
     private void shootLaser(Vector2 startPos, float angle) {
@@ -93,4 +123,5 @@ public class PlayerSystem extends EntitySystem {
         float rad = (float) Math.toRadians(angle);
         return new Vector2((float) -Math.sin(rad) * speed, (float) Math.cos(rad) * speed);
     }
+
 }

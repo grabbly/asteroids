@@ -65,7 +65,7 @@ public class RenderSystem extends EntitySystem {
             TextureComponent tex = textureMapper.get(entity);
             RotationComponent rot = rotationMapper.get(entity);
 
-            if (pos != null && tex != null) {
+            if (pos != null && tex != null && tex.visible) {
                 float angle = (rot != null) ? rot.angle : 0;
                 TextureRegion region = new TextureRegion(tex.texture);
 
