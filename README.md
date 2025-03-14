@@ -13,7 +13,7 @@
 - UI: отображение счета, количества жизней, FPS и размера экрана
 
 ## Структура проекта
-
+<pre>
 asteroids
  ├── core
  │   ├── src/main/java/op/javagame/asteroids
@@ -30,6 +30,7 @@ asteroids
  ├── lwjgl3                 // Запуск через LWJGL3
  ├── gradlew                // Gradle Wrapper
  ├── README.md              // Описание проекта
+</pre>
 
 ## Инструкция по запуску
 ### 1. Установка зависимостей
