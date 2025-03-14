@@ -15,21 +15,21 @@
 ## Структура проекта
 
 asteroids
-├── core
-│   ├── src/main/java/op/javagame/asteroids
-│   │   ├── ecs
-│   │   │   ├── components   // Компоненты ECS
-│   │   │   ├── systems      // Системы ECS
-│   │   │   ├── factories    // Фабрики сущностей
-│   │   ├── events          // Шина событий (EventBus)
-│   │   ├── screens         // Экранные состояния игры
-│   ├── assets
-│   │   ├── textures        // Спрайты и фон
-│   │   ├── ui              // Скины UI
-│   ├── build.gradle        // Сборка проекта
-├── lwjgl3                 // Запуск через LWJGL3
-├── gradlew                // Gradle Wrapper
-├── README.md              // Описание проекта
+ ├── core
+ │   ├── src/main/java/op/javagame/asteroids
+ │   │   ├── ecs
+ │   │   │   ├── components   // Компоненты ECS
+ │   │   │   ├── systems      // Системы ECS
+ │   │   │   ├── factories    // Фабрики сущностей
+ │   │   ├── events          // Шина событий (EventBus)
+ │   │   ├── screens         // Экранные состояния игры
+ │   ├── assets
+ │   │   ├── textures        // Спрайты и фон
+ │   │   ├── ui              // Скины UI
+ │   ├── build.gradle        // Сборка проекта
+ ├── lwjgl3                 // Запуск через LWJGL3
+ ├── gradlew                // Gradle Wrapper
+ ├── README.md              // Описание проекта
 
 ## Инструкция по запуску
 ### 1. Установка зависимостей
