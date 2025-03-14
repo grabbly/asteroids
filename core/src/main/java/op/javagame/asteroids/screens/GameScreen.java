@@ -22,8 +22,8 @@ public class GameScreen implements Screen {
     private int screenHeight = 600;
     private Viewport viewport;
 
-    private float shakeDuration = 0;  // Длительность тряски камеры
-    private final float maxShakeIntensity = 0.3f;  // Интенсивность тряски
+    private float shakeDuration = 0;
+    private float shakeIntensity = 0.5f;
 
     public GameScreen() {
         initialize();
@@ -44,8 +44,9 @@ public class GameScreen implements Screen {
         });
 
         EventBus.INSTANCE.addListener(event -> {
-            if (event instanceof GameEvents.PlayerHitEvent) {
-                shakeCamera(0.5f); // При столкновении с астероидом камера трясется 0.5 сек
+            if (event instanceof GameEvents.CameraShakeEvent) {
+                GameEvents.CameraShakeEvent shakeEvent = (GameEvents.CameraShakeEvent) event;
+                shakeCamera(shakeEvent.duration, shakeEvent.intensity);
             }
         });
     }
@@ -84,18 +85,24 @@ public class GameScreen implements Screen {
         engine.addEntity(GameEntityFactory.createBackground());
     }
 
-    public void shakeCamera(float duration) {
+    public void shakeCamera(float duration, float intensity) {
+        normalCameraPosition = new Vector2(camera.position.x, camera.position.y);
         shakeDuration = duration;
+        shakeIntensity = intensity;
     }
-
+    private Vector2 normalCameraPosition;
     @Override
     public void render(float delta) {
+
         if (shakeDuration > 0) {
+
             shakeDuration -= delta;
 
-            float shakeX = MathUtils.random(-maxShakeIntensity, maxShakeIntensity);
-            float shakeY = MathUtils.random(-maxShakeIntensity, maxShakeIntensity);
+            float shakeX = MathUtils.random(-shakeIntensity, shakeIntensity);
+            float shakeY = MathUtils.random(-shakeIntensity, shakeIntensity);
             camera.position.add(shakeX, shakeY, 0);
+        }else{
+            camera.position.set(normalCameraPosition.x, normalCameraPosition.y, 0);
         }
 
         camera.update();
@@ -110,6 +117,7 @@ public class GameScreen implements Screen {
         camera.viewportWidth = width;
         camera.viewportHeight = height;
         camera.setToOrtho(false, width, height);
+        normalCameraPosition = new Vector2(width / 2f, height / 2f);
         camera.position.set(width / 2f, height / 2f, 0);
         camera.update();
     }

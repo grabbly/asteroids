@@ -14,4 +14,13 @@ public class GameEvents {
             this.remainingLives = lives;
         }
     }
+    public static class CameraShakeEvent {
+        public final float duration;
+        public final float intensity;
+
+        public CameraShakeEvent(float duration, float intensity) {
+            this.duration = duration;
+            this.intensity = intensity;
+        }
+    }
 }

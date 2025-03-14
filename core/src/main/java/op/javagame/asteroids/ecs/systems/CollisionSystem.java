@@ -86,6 +86,7 @@ public class CollisionSystem extends EntitySystem {
                     EventBus.INSTANCE.notify(new GameEvents.PlayerHitEvent(playerHealth.lives));
                     Gdx.app.log("COLLISION", "Player has " + playerHealth.lives + " lives left.");
                     player.add(new InvincibilityComponent());
+                    EventBus.INSTANCE.notify(new GameEvents.CameraShakeEvent(0.2f, 5.3f));
                     // Remove the asteroid that hit the player
                     toRemove.add(asteroid);
 
