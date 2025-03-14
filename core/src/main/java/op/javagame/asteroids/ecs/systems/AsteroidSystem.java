@@ -10,7 +10,7 @@ import op.javagame.asteroids.ecs.factories.GameEntityFactory;
 
 public class AsteroidSystem extends EntitySystem {
     private static final float SPAWN_INTERVAL = 2f;  // Интервал спавна
-    private static final float ASTEROID_SPEED = 100f;  // Скорость астероидов
+    private static final float ASTEROID_SPEED = 50f;  // Скорость астероидов
     private static final float SPAWN_MARGIN = 50f;  // Отступ за границами экрана
     private static final int MAX_ASTEROIDS = 10; // Максимальное количество астероидов
 
@@ -63,7 +63,7 @@ public class AsteroidSystem extends EntitySystem {
         Vector2 direction = new Vector2(screenWidth / 2f - x, screenHeight / 2f - y).nor();
         Vector2 velocity = direction.scl(ASTEROID_SPEED);
 
-        Entity asteroid = GameEntityFactory.createAsteroid(new Vector2(x, y));
+        Entity asteroid = GameEntityFactory.createAsteroid(new Vector2(x, y), false);
         asteroid.add(new VelocityComponent(velocity)); // Добавляем скорость
 
         engine.addEntity(asteroid);

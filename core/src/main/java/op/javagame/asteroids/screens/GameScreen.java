@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -13,9 +14,6 @@ import op.javagame.asteroids.ecs.systems.*;
 import op.javagame.asteroids.events.EventBus;
 import op.javagame.asteroids.events.GameEvents;
 
-/**
- * Основной игровой экран.
- */
 public class GameScreen implements Screen {
     private Engine engine;
     private SpriteBatch batch;
@@ -23,6 +21,10 @@ public class GameScreen implements Screen {
     private int screenWidth = 800;
     private int screenHeight = 600;
     private Viewport viewport;
+
+    private float shakeDuration = 0;  // Длительность тряски камеры
+    private final float maxShakeIntensity = 0.3f;  // Интенсивность тряски
+
     public GameScreen() {
         initialize();
     }
@@ -41,10 +43,15 @@ public class GameScreen implements Screen {
             }
         });
 
+        EventBus.INSTANCE.addListener(event -> {
+            if (event instanceof GameEvents.PlayerHitEvent) {
+                shakeCamera(0.5f); // При столкновении с астероидом камера трясется 0.5 сек
+            }
+        });
     }
 
     private void setupCamera() {
-        float worldWidth = 20f;  // 📏 Увеличили ширину мира (было 10, стало 20)
+        float worldWidth = 20f;
         float worldHeight = worldWidth * (Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth());
 
         camera = new OrthographicCamera();
@@ -55,29 +62,43 @@ public class GameScreen implements Screen {
 
     private void setupEngine() {
         engine = new Engine();
-        engine.addSystem(new PlayerSystem(new Vector2((float) screenWidth /2, (float) screenHeight /2)));
+        engine.addSystem(new PlayerSystem(new Vector2((float) screenWidth / 2, (float) screenHeight / 2)));
         engine.addSystem(new MovementSystem(camera));
         engine.addSystem(new RenderSystem(batch, camera));
         engine.addSystem(new AsteroidSystem());
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new LaserSystem());
         engine.addSystem(new UISystem(camera));
-
     }
+
     private void restartGame() {
-        Gdx.app.log("GameScreen", "🔄 Restarting game...");
+        Gdx.app.log("GameScreen", "Restarting game...");
 
         engine.removeAllEntities();
-
-        // ✅ Пересоздаём игровые системы
+        EventBus.INSTANCE.notify(new GameEvents.ResetScoreEvent());
         setupEngine();
         setupBackground();
     }
-    private void setupBackground(){
+
+    private void setupBackground() {
         engine.addEntity(GameEntityFactory.createBackground());
     }
+
+    public void shakeCamera(float duration) {
+        shakeDuration = duration;
+    }
+
     @Override
     public void render(float delta) {
+        if (shakeDuration > 0) {
+            shakeDuration -= delta;
+
+            float shakeX = MathUtils.random(-maxShakeIntensity, maxShakeIntensity);
+            float shakeY = MathUtils.random(-maxShakeIntensity, maxShakeIntensity);
+            camera.position.add(shakeX, shakeY, 0);
+        }
+
+        camera.update();
         engine.update(delta);
     }
 
